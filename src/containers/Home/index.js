@@ -1,8 +1,24 @@
 import React from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { ALL_AUTHORS, ADD_AUTHOR }from './graphql'
+import { useHistory } from 'react-router-dom'
+const jwt = require('jsonwebtoken')
+const decodedToken = token => {
+  try {
+    return jwt.verify(token, 'reughdjsasdkpmasipkmsdfadf')
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 const Home = () => {
+  const history = useHistory()
+  const token = localStorage.getItem('token')
+  const decoded = decodedToken(token)
+  if (!decoded.user || !token) {
+    history.push('/')
+  }
+  
   const {data, loading, error} = useQuery(ALL_AUTHORS)
   //const [authors, {data, loading, error, called }] = useLazyQuery(ALL_AUTHORS)
   const [addAuthor, {error: addAuthorError, loading: addAuthorLoading}] = useMutation(ADD_AUTHOR, {  
